@@ -14,16 +14,19 @@
   <body badge-controller ng-cloak>
     <h1>Pirate badge</h1>
     
+    
+    
     <div class="widgets">
-      
-      <div>
-        <input type="text" id="inputName" maxlength="15" ng-model="ctrl.name">
-      </div>
-      
-      <div>
-    <button ng-click="ctrl.generateName()" ng-disabled="ctrl.inputIsNotEmpty">{{ctrl.label}}</button>
+  <div>
+    <input type="text" id="inputName" maxlength="15" ng-model="ctrl.name"
+        ng-disabled="!ctrl.dataLoaded">
   </div>
-    </div>
+  <div>
+    <button ng-click="ctrl.generateName()"
+        ng-disabled="!ctrl.dataLoaded || ctrl.inputIsNotEmpty">
+        {{ctrl.label}}</button>
+  </div>
+</div>
 
     <badge name={{ctrl.pirateName}}
     style="float: left; margin-left: 20px;">
