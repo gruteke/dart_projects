@@ -1,8 +1,9 @@
 library s1_basics.badge_controller;
 
 import 'package:angular/angular.dart';
-import 'dart:math' show Random;
+//import 'dart:math' show Random;
 import 'package:s1_basics/model.dart';
+import 'package:s1_basics/services/names_service.dart';
 import 'dart:async' show Future;
 
 
@@ -10,24 +11,13 @@ import 'dart:async' show Future;
   selector: '[badge-controller]',
   publishAs: 'ctrl')
 class BadgeController {
-  final Http _http;
-  bool dataLoaded = false;
+  NamesService ns;
   
-  Future _loadData() {
-      return _http.get('packages/s1_basics/assets/piratenames.json')
-          .then((response) {
-            names = response.data['names'];
-            appellations = response.data['appellations'];
-          });
-    }
+  //bool dataLoaded = false;
   
-  BadgeController(this._http) {
-      _loadData()
-          .then((_) => dataLoaded = true)
-          .catchError((error) {
-            print('Could not read data from the JSON file: $error');
-          });
-    }
+  
+  
+  BadgeController(this.ns);
   
   //static const DEFAULT_NAME = 'Anne Bonney';
     static const LABEL1 = 'Arrr! Write yer name!';
@@ -49,20 +39,23 @@ class BadgeController {
      get name => _name;
 
      set name(newName) {
-       _name = newName;
-       pn..firstName = newName
-         ..appellation = _oneRandom(appellations);
-     }
+         _name = newName;
+         ns.randomAppellation().then((appellation) {
+           pn..firstName = newName
+             ..appellation = appellation;
+         });
+       }
   
   bool get inputIsNotEmpty => name.trim().isNotEmpty;
     String get label => inputIsNotEmpty ? LABEL1 : LABEL2;
 
-    generateName() {
-      name = _oneRandom(names);
-    }
     
-    String _oneRandom(List<String> list) =>
-          list[new Random().nextInt(list.length)];
+    
+    Future generateName() => ns.randomName().then((aName) {
+        name = aName;
+      });
+    
+    
     
     PirateName pn = new PirateName();
     
